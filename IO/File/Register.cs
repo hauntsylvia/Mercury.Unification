@@ -5,14 +5,14 @@ namespace Mercury.Unification.IO.File
     public class Register
     {
         public static readonly DirectoryInfo DefaultLocation = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".Mercury"));
-       
-        
+
+
         public Register(string RegisterName)
         {
             if (!DefaultLocation.Exists)
-               DefaultLocation.Create();
+                DefaultLocation.Create();
             this.location = new(Path.Combine(DefaultLocation.FullName, RegisterName));
-            if(!this.Location.Exists)
+            if (!this.Location.Exists)
                 this.Location.Create();
         }
 
@@ -41,7 +41,7 @@ namespace Mercury.Unification.IO.File
                 else
                     return null;
             }
-            catch(Exception E)
+            catch (Exception E)
             {
                 Console.WriteLine(E);
                 throw;
@@ -57,7 +57,7 @@ namespace Mercury.Unification.IO.File
                 using StreamWriter Writer = new(FileInfo.FullName);
                 Writer.Write(JsonConvert.SerializeObject(Record, Formatting.Indented));
             }
-            catch(Exception E)
+            catch (Exception E)
             {
                 Console.WriteLine(E);
                 throw;
