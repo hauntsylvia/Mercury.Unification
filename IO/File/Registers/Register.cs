@@ -33,25 +33,14 @@ namespace Mercury.Unification.IO.File.Registers
 
         public IRecord<T>? GetRecord(string Key)
         {
-            try
+            FileInfo FileInfo = this.GetFileInfoFromKey(Key);
+            if (FileInfo.Exists)
             {
-                FileInfo FileInfo = this.GetFileInfoFromKey(Key);
-                if (FileInfo.Exists)
-                {
-                    using StreamReader Reader = new(FileInfo.OpenRead());
-                    Record<T>? Attempt = JsonConvert.DeserializeObject<Record<T>>(Reader.ReadToEnd());
-                    return Attempt;
-                }
-                else
-                {
-                    return null;
-                }
+                using StreamReader Reader = new(FileInfo.OpenRead());
+                Record<T>? Attempt = JsonConvert.DeserializeObject<Record<T>>(Reader.ReadToEnd());
+                return Attempt;
             }
-            catch (Exception E)
-            {
-                Console.WriteLine(E);
-                throw;
-            }
+            return null;
         }
 
         public void SaveRecord(string Key, IRecord<T> Value)
