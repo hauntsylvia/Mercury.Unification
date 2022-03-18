@@ -72,6 +72,17 @@ namespace Mercury.Unification.IO.File.Registers
             }
             return Records;
         }
+        public IRecord<T>? DeleteRecord(string Key)
+        {
+            FileInfo FromKey = this.GetFileInfoFromKey(Key);
+            if(FromKey.Exists)
+            {
+                IRecord<T>? Record = this.GetRecord(Key);
+                FromKey.Delete();
+                return Record;
+            }
+            return null;
+        }
 
         public IRegister<TA> CreateSubRegister<TA>(string RegisterName)
         {
