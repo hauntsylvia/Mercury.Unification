@@ -7,17 +7,25 @@ namespace Mercury.Unification.IO.File.Registers
     {
         public static readonly DirectoryInfo DefaultLocation = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".Mercury"));
 
-        public Register(string RegisterName)
+        public Register(object RegisterName)
         {
-            if (!DefaultLocation.Exists)
+            string? RegisterNameAsStr = RegisterName?.ToString();
+            if(RegisterNameAsStr != null)
             {
-                DefaultLocation.Create();
-            }
+                if (!DefaultLocation.Exists)
+                {
+                    DefaultLocation.Create();
+                }
 
-            this.Location = new(Path.Combine(DefaultLocation.FullName, RegisterName));
-            if (!this.Location.Exists)
+                this.Location = new(Path.Combine(DefaultLocation.FullName, RegisterNameAsStr));
+                if (!this.Location.Exists)
+                {
+                    this.Location.Create();
+                }
+            }
+            else
             {
-                this.Location.Create();
+                throw new ArgumentNullException(nameof(RegisterName), "ToString method and object passed can not be null.");
             }
         }
 
@@ -26,12 +34,12 @@ namespace Mercury.Unification.IO.File.Registers
         /// </summary>
         public DirectoryInfo Location { get; }
 
-        private FileInfo GetFileInfoFromKey(string Key)
+        private FileInfo GetFileInfoFromKey(object Key)
         {
             return new(Path.Combine(this.Location.FullName, Key + ".mercury"));
         }
 
-        public IRecord<T>? GetRecord(string Key)
+        public IRecord<T>? GetRecord(object Key)
         {
             FileInfo FileInfo = this.GetFileInfoFromKey(Key);
             if (FileInfo.Exists)
@@ -43,7 +51,7 @@ namespace Mercury.Unification.IO.File.Registers
             return null;
         }
 
-        public void SaveRecord(string Key, IRecord<T> Value)
+        public void SaveRecord(object Key, IRecord<T> Value)
         {
             try
             {
@@ -72,7 +80,7 @@ namespace Mercury.Unification.IO.File.Registers
             }
             return Records;
         }
-        public IRecord<T>? DeleteRecord(string Key)
+        public IRecord<T>? DeleteRecord(object Key)
         {
             FileInfo FromKey = this.GetFileInfoFromKey(Key);
             if(FromKey.Exists)
@@ -84,10 +92,23 @@ namespace Mercury.Unification.IO.File.Registers
             return null;
         }
 
-        public IRegister<TA> CreateSubRegister<TA>(string RegisterName)
+        /// <summary>
+        /// </summary>
+        /// <typeparam name="TA"></typeparam>
+        /// <param name="RegisterName"></param>
+        /// <returns>A <see cref="Register{T}"/> within only one level lower in the directory of the instance using the given name. Null if null is passed as a parameter.</returns>
+        public Register<TA>? GetSubRegister<TA>(object RegisterName)
         {
-            DirectoryInfo Info = new(Path.Combine(this.Location.FullName, RegisterName));
-            return new Register<TA>(Info.FullName);
+            string? RegisterNameAsStr = RegisterName?.ToString();
+            if(RegisterNameAsStr != null)
+            {
+                DirectoryInfo Info = new(Path.Combine(this.Location.FullName, RegisterNameAsStr));
+                return new Register<TA>(Info.FullName);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
