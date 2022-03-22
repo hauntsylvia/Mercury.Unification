@@ -1,6 +1,6 @@
 ﻿namespace Mercury.Unification.IO.File.Records
 {
-    public class Record<T> : IRecord<T>
+    public class Record<T>
     {
         public Record(T ObjectToStore, IList<string>? Notes = null)
         {

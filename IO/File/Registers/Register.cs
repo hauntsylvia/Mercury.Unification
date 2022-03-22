@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Mercury.Unification.IO.File.Registers
 {
-    public class Register<T> : IRegister<T>
+    public class Register<T>
     {
         public static readonly DirectoryInfo DefaultLocation = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".Mercury"));
 
@@ -39,7 +39,7 @@ namespace Mercury.Unification.IO.File.Registers
             return new(Path.Combine(this.Location.FullName, Key + ".mercury"));
         }
 
-        public IRecord<T>? GetRecord(object Key)
+        public Record<T>? GetRecord(object Key)
         {
             FileInfo FileInfo = this.GetFileInfoFromKey(Key);
             if (FileInfo.Exists)
@@ -51,7 +51,7 @@ namespace Mercury.Unification.IO.File.Registers
             return null;
         }
 
-        public void SaveRecord(object Key, IRecord<T> Value)
+        public void SaveRecord(object Key, Record<T> Value)
         {
             try
             {
@@ -66,13 +66,13 @@ namespace Mercury.Unification.IO.File.Registers
             }
         }
 
-        public IReadOnlyCollection<IRecord<T>> GetAllRecords()
+        public IReadOnlyCollection<Record<T>> GetAllRecords()
         {
-            List<IRecord<T>> Records = new();
+            List<Record<T>> Records = new();
             foreach (FileInfo File in this.Location.GetFiles())
             {
                 using StreamReader Reader = new(File.FullName);
-                IRecord<T>? Attempt = JsonConvert.DeserializeObject<IRecord<T>>(Reader.ReadToEnd());
+                Record<T>? Attempt = JsonConvert.DeserializeObject<Record<T>>(Reader.ReadToEnd());
                 if (Attempt != null)
                 {
                     Records.Add(Attempt);
@@ -80,12 +80,12 @@ namespace Mercury.Unification.IO.File.Registers
             }
             return Records;
         }
-        public IRecord<T>? DeleteRecord(object Key)
+        public Record<T>? DeleteRecord(object Key)
         {
             FileInfo FromKey = this.GetFileInfoFromKey(Key);
             if(FromKey.Exists)
             {
-                IRecord<T>? Record = this.GetRecord(Key);
+                Record<T>? Record = this.GetRecord(Key);
                 FromKey.Delete();
                 return Record;
             }
@@ -96,6 +96,7 @@ namespace Mercury.Unification.IO.File.Registers
         /// </summary>
         /// <typeparam name="TA"></typeparam>
         /// <param name="RegisterName"></param>
+        /// <param name="Serializer"></param>
         /// <returns>A <see cref="Register{T}"/> within only one level lower in the directory of the instance using the given name. Null if null is passed as a parameter.</returns>
         public Register<TA>? GetSubRegister<TA>(object RegisterName)
         {
