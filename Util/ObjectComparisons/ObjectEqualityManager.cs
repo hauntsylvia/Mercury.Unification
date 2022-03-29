@@ -21,7 +21,7 @@ namespace Mercury.Unification.Util.ObjectComparisons
                         {
                             object? AValue = AInfo.GetValue(A, null);
                             object? BValue = BInfo.GetValue(B, null);
-                            if (AValue != null && BValue != null && !AValue.Equals(BValue) && !(AValue == null && BValue == null))
+                            if (AValue != null && BValue != null && !AValue.Equals(BValue))
                             {
                                 return false;
                             }
