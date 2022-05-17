@@ -10,7 +10,7 @@ namespace Mercury.Unification.IO.File.Registers
         public Register(object RegisterName)
         {
             string? RegisterNameAsStr = RegisterName?.ToString();
-            if(RegisterNameAsStr != null)
+            if (RegisterNameAsStr != null)
             {
                 if (!DefaultLocation.Exists)
                 {
@@ -83,7 +83,7 @@ namespace Mercury.Unification.IO.File.Registers
         public Record<T>? DeleteRecord(object Key)
         {
             FileInfo FromKey = this.GetFileInfoFromKey(Key);
-            if(FromKey.Exists)
+            if (FromKey.Exists)
             {
                 Record<T>? Record = this.GetRecord(Key);
                 FromKey.Delete();
@@ -101,7 +101,7 @@ namespace Mercury.Unification.IO.File.Registers
         public Register<TA>? GetSubRegister<TA>(object RegisterName)
         {
             string? RegisterNameAsStr = RegisterName?.ToString();
-            if(RegisterNameAsStr != null)
+            if (RegisterNameAsStr != null)
             {
                 DirectoryInfo Info = new(Path.Combine(this.Location.FullName, RegisterNameAsStr));
                 return new Register<TA>(Info.FullName);

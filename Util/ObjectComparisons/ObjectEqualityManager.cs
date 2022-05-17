@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace Mercury.Unification.Util.ObjectComparisons
 {
@@ -11,7 +6,7 @@ namespace Mercury.Unification.Util.ObjectComparisons
     {
         public static bool PropertiesAreEqual(object A, object B)
         {
-            if(A != null && B != null)
+            if (A != null && B != null)
             {
                 foreach (PropertyInfo AInfo in A.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
